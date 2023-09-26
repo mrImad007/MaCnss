@@ -28,7 +28,8 @@ public class MedicineDAO implements DocumentDAO<Medicine>{
         }
     }
 
-    public boolean addDocument(Medicine medicine,int id) {
+    @Override
+    public boolean addDocument(Medicine medicine) {
         try {
             int checker = 0;
             String query = "INSERT INTO doc_medicine (CODE , barrecode, name, payed_amount, reimbursement_rate) VALUES (?,?,?,?,?)";
