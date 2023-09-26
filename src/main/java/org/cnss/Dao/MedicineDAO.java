@@ -107,6 +107,23 @@ public class MedicineDAO implements DocumentDAO<Medicine>{
         }
     }
 
+    public boolean doc_case(int case_id , String code){
+        try{
+            String query  = "INSERT INTO case_docs (id_case, medicine_code) VALUES (?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1,case_id);
+            preparedStatement.setString(2,code);
+            int checker = preparedStatement.executeUpdate();
+            if (checker>0){
+                return true;
+            }else {
+                return false;
+            }
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public boolean updateDocument(Medicine doc) {

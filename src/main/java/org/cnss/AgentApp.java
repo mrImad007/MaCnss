@@ -44,8 +44,8 @@ public class AgentApp {
                         patient_id = resultSet.getInt("id");
                      }
                      if(patient_id>0){
-                         boolean isCase = reimbursementCaseDAO.createCase(patient_id,agent_id);
-                         if(isCase){
+                         int caseId = reimbursementCaseDAO.createCase(patient_id,agent_id);
+                         if(caseId>0){
                              JOptionPane.showMessageDialog(null,"Dossier bien créé !");
                              int subchoice = Integer.parseInt(JOptionPane.showInputDialog(null,"Gestion du dossierCnss\n" +
                                      "1 : Ajouter un medicament\n" +
@@ -82,9 +82,9 @@ public class AgentApp {
                                                  Medicine medicine = new Medicine(code,codeBare,name,payed_amount,Reimbursement_rate);
 
                                                  boolean isDocAdded =medicineDAO.addDocument(medicine);
-
                                                  if (isDocAdded) {
-                                                     JOptionPane.showMessageDialog(null,"Document bien ajouté !");
+                                                     boolean finalCheck = medicineDAO.doc_case(caseId,code);
+                                                     if (finalCheck) JOptionPane.showMessageDialog(null,"Document bien ajouté !");
                                                  } else {
                                                      JOptionPane.showMessageDialog(null,"Erreur survenue !","error", JOptionPane.ERROR_MESSAGE);
                                                  }
