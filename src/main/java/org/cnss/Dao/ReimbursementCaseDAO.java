@@ -4,10 +4,9 @@ import org.cnss.JDBC.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.concurrent.ExecutionException;
 
 public class ReimbursementCaseDAO {
-    private Connection connection;
+    private final Connection connection;
 
     public ReimbursementCaseDAO() {
         connection = DatabaseConnection.getConnection();

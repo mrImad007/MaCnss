@@ -3,6 +3,11 @@ package org.cnss.Classes;
 public class Scanner extends Document{
     private static String laboratory;
     private static String description;
+
+    public Scanner(String code, int payedAmount, int reimbursementRate) {
+        super(code, payedAmount, reimbursementRate);
+    }
+
     public static String getLaboratory() {
         return laboratory;
     }
@@ -20,9 +25,7 @@ public class Scanner extends Document{
     }
 
 
-    public Scanner(int id ,String code, String payedAmount, String reimbursementRate) {
-        super(id, code, payedAmount, reimbursementRate);
-    }
+
 
 
 }
