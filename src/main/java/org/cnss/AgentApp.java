@@ -44,23 +44,27 @@ public class AgentApp {
                      }
                      if(patient_id>0){
                          int caseId = reimbursementCaseDAO.createCase(patient_id,agent_id);
-                         if(caseId>0){
-                             JOptionPane.showMessageDialog(null,"Dossier bien créé !");
-                             int subchoice = Integer.parseInt(JOptionPane.showInputDialog(null,"Gestion du dossierCnss\n" +
-                                     "1 : Ajouter un medicament\n" +
-                                     "2 : Ajouter un document du Laboratoire \n" +
-                                     "3 : Ajouter une visite médicale\n"));
-                             switch (subchoice){
-                                 case 1 : {
-                                     int searchChoice = Integer.parseInt(JOptionPane.showInputDialog(null,"" +
+                         if(caseId>0) {
+                             JOptionPane.showMessageDialog(null, "Dossier bien créé !");
+                             int subchoice = 0;
+                             while (subchoice != 4){
+                                 subchoice = Integer.parseInt(JOptionPane.showInputDialog(null,
+                                         "Gestion du dossier Cnss\n" +
+                                                 "1 : Ajouter un medicament\n" +
+                                                 "2 : Ajouter un document du Laboratoire\n" +
+                                                 "3 : Ajouter une visite médicale\n" +
+                                                 "4 : Terminer et quitter"));
+                             switch (subchoice) {
+                                 case 1: {
+                                     int searchChoice = Integer.parseInt(JOptionPane.showInputDialog(null, "" +
                                              "1 : Entrer le nom du medicament\n" +
                                              "2 : Entrer le code du medicament"));
-                                     switch (searchChoice){
-                                         case 1 : {
-                                             String name = JOptionPane.showInputDialog(null,"Entrer le nom du medicament");
+                                     switch (searchChoice) {
+                                         case 1: {
+                                             String name = JOptionPane.showInputDialog(null, "Entrer le nom du medicament");
                                              String rate = null;
                                              String code = null;
-                                             String codeBare ;
+                                             String codeBare;
                                              int payed_amount = 0;
                                              HashMap<String, String> medicineData = medicineDAO.checkMedicineByname(name);
 
@@ -70,31 +74,32 @@ public class AgentApp {
                                              }
                                              if ("70%".equals(rate)) {
                                                  int Reimbursement_rate = 70;
-                                                 codeBare = JOptionPane.showInputDialog(null,"Enter le codeBarre du medicament (optionel)");
-                                                 if(codeBare.trim().isEmpty()){
+                                                 codeBare = JOptionPane.showInputDialog(null, "Enter le codeBarre du medicament (optionel)");
+                                                 if (codeBare.trim().isEmpty()) {
                                                      codeBare = null;
                                                  }
-                                                 payed_amount = Integer.parseInt(JOptionPane.showInputDialog(null,"Enter le montant payé"));
+                                                 payed_amount = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter le montant payé"));
 
-                                                 Medicine medicine = new Medicine(code,codeBare,name,payed_amount,Reimbursement_rate);
+                                                 Medicine medicine = new Medicine(code, codeBare, name, payed_amount, Reimbursement_rate);
 
-                                                 boolean isDocAdded =medicineDAO.addDocument(medicine);
+                                                 boolean isDocAdded = medicineDAO.addDocument(medicine);
                                                  if (isDocAdded) {
-                                                     boolean finalCheck = medicineDAO.doc_case(caseId,code);
-                                                     if (finalCheck) JOptionPane.showMessageDialog(null,"Document bien ajouté !");
+                                                     boolean finalCheck = medicineDAO.doc_case(caseId, code);
+                                                     if (finalCheck)
+                                                         JOptionPane.showMessageDialog(null, "Document bien ajouté !");
                                                  } else {
-                                                     JOptionPane.showMessageDialog(null,"Erreur survenue !","error", JOptionPane.ERROR_MESSAGE);
+                                                     JOptionPane.showMessageDialog(null, "Erreur survenue !", "error", JOptionPane.ERROR_MESSAGE);
                                                  }
                                              } else {
-                                                 JOptionPane.showMessageDialog(null,"Ce produit n'est pas remboursable ou une erreur est survenue !","error", JOptionPane.ERROR_MESSAGE);
+                                                 JOptionPane.showMessageDialog(null, "Ce produit n'est pas remboursable ou une erreur est survenue !", "error", JOptionPane.ERROR_MESSAGE);
                                              }
                                              break;
                                          }
-                                         case 2 : {
-                                             String name = JOptionPane.showInputDialog(null,"Entrer le nom du medicament");
+                                         case 2: {
+                                             String name = JOptionPane.showInputDialog(null, "Entrer le nom du medicament");
                                              String rate = null;
                                              String code = null;
-                                             String codeBare ;
+                                             String codeBare;
                                              int payed_amount = 0;
                                              HashMap<String, String> medicineData = medicineDAO.checkMedicineByCode(code);
 
@@ -104,23 +109,23 @@ public class AgentApp {
                                              }
                                              if ("70%".equals(rate)) {
                                                  int Reimbursement_rate = 70;
-                                                 codeBare = JOptionPane.showInputDialog(null,"Enter le codeBarre du medicament (optionel)");
-                                                 if(codeBare.trim().isEmpty() || codeBare == null){
+                                                 codeBare = JOptionPane.showInputDialog(null, "Enter le codeBarre du medicament (optionel)");
+                                                 if (codeBare.trim().isEmpty() || codeBare == null) {
                                                      codeBare = null;
                                                  }
-                                                 payed_amount = Integer.parseInt(JOptionPane.showInputDialog(null,"Enter le montant payé"));
+                                                 payed_amount = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter le montant payé"));
 
-                                                 Medicine medicine = new Medicine(code,codeBare,name,payed_amount,Reimbursement_rate);
+                                                 Medicine medicine = new Medicine(code, codeBare, name, payed_amount, Reimbursement_rate);
 
-                                                 boolean isDocAdded =medicineDAO.addDocument(medicine);
+                                                 boolean isDocAdded = medicineDAO.addDocument(medicine);
 
                                                  if (isDocAdded) {
-                                                     JOptionPane.showMessageDialog(null,"Document bien ajouté !");
+                                                     JOptionPane.showMessageDialog(null, "Document bien ajouté !");
                                                  } else {
-                                                     JOptionPane.showMessageDialog(null,"Erreur survenue !","error", JOptionPane.ERROR_MESSAGE);
+                                                     JOptionPane.showMessageDialog(null, "Erreur survenue !", "error", JOptionPane.ERROR_MESSAGE);
                                                  }
                                              } else {
-                                                 JOptionPane.showMessageDialog(null,"Ce produit n'est pas remboursable ou une erreur est survenue !","error", JOptionPane.ERROR_MESSAGE);
+                                                 JOptionPane.showMessageDialog(null, "Ce produit n'est pas remboursable ou une erreur est survenue !", "error", JOptionPane.ERROR_MESSAGE);
                                              }
                                          }
                                      }
@@ -152,30 +157,36 @@ public class AgentApp {
                                                  Category.MALADIE
                                          );
 
-                                         int payed_amount = Integer.parseInt(JOptionPane.showInputDialog(null,"Enter le montant payé"));
+                                         int payed_amount = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter le montant payé"));
                                          String randomCode = laboDAO.generateRandomCode();
 
                                          int reimbursement_rate = (selectedCategory == Category.MALADIE) ? 70 : 90;
-                                         LaboratoryDoc doc = new LaboratoryDoc(randomCode, payed_amount, reimbursement_rate, Description.RADIO, labo, Category.MALADIE);
+                                         LaboratoryDoc doc = new LaboratoryDoc(randomCode, payed_amount, reimbursement_rate, selectedDescription, labo, selectedCategory);
 
 
                                          if (selectedCategory == Category.ESTHETIQUE) {
-                                             JOptionPane.showMessageDialog(null,"Ce type de document n'est pas remboursable","error",JOptionPane.ERROR_MESSAGE);
+                                             JOptionPane.showMessageDialog(null, "Ce type de document n'est pas remboursable", "error", JOptionPane.ERROR_MESSAGE);
                                          } else {
                                              boolean isDocAdded = laboDAO.addDocument(doc);
                                              if (isDocAdded) {
-                                                 JOptionPane.showMessageDialog(null,"Document bien ajouté !");
+                                                 JOptionPane.showMessageDialog(null, "Document bien ajouté !");
                                              } else {
-                                                 JOptionPane.showMessageDialog(null,"Erreur survenue !","error", JOptionPane.ERROR_MESSAGE);
+                                                 JOptionPane.showMessageDialog(null, "Erreur survenue !", "error", JOptionPane.ERROR_MESSAGE);
                                              }
                                          }
                                      }
                                      break;
                                  }
-
+                                 case 3 : {
+                                     break;
+                                 }
+                                 case 4 : {
+                                     break;
+                                 }
                                  default:
                                      throw new IllegalStateException("Unexpected value: " + subchoice);
                              }
+                         }
                          }else{
                              JOptionPane.showMessageDialog(null,"une erreur est survenue !", "error", JOptionPane.ERROR_MESSAGE);
                          }
