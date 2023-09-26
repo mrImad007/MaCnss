@@ -1,6 +1,5 @@
 package org.cnss.Dao;
 
-import org.cnss.Classes.Document;
 import org.cnss.Classes.Medicine;
 import org.cnss.JDBC.DatabaseConnection;
 
@@ -11,7 +10,7 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 
 public class MedicineDAO implements DocumentDAO<Medicine>{
-    private Connection connection;
+    private final Connection connection;
     public MedicineDAO() {
         connection = DatabaseConnection.getConnection();
     }

@@ -1,8 +1,6 @@
 package org.cnss.Classes;
 
 public abstract class Document {
-
-
     private int id;
     private String code;
     private int payedAmount;
