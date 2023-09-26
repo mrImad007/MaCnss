@@ -1,16 +1,15 @@
 package org.cnss;
 
-import org.cnss.Classes.Agent;
-import org.cnss.Dao.AgentDAO;
+import org.cnss.Classes.LaboratoryDoc;
+import org.cnss.Dao.*;
 import org.cnss.Classes.Medicine;
-import org.cnss.Dao.MedicineDAO;
-import org.cnss.Dao.PatientDAO;
-import org.cnss.Dao.ReimbursementCaseDAO;
-
 import javax.swing.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import org.cnss.Classes.Description;
+import org.cnss.Classes.Category;
+
 
 public class AgentApp {
     public static void main() throws SQLException {
@@ -49,10 +48,8 @@ public class AgentApp {
                              JOptionPane.showMessageDialog(null,"Dossier bien créé !");
                              int subchoice = Integer.parseInt(JOptionPane.showInputDialog(null,"Gestion du dossierCnss\n" +
                                      "1 : Ajouter un medicament\n" +
-                                     "2 : Ajouter un radio \n" +
-                                     "3 : Ajouter un scanner\n" +
-                                     "4 : Ajouter une analyse\n" +
-                                     "5 : Ajouter une visite médicale\n"));
+                                     "2 : Ajouter un document du Laboratoire \n" +
+                                     "3 : Ajouter une visite médicale\n"));
                              switch (subchoice){
                                  case 1 : {
                                      int searchChoice = Integer.parseInt(JOptionPane.showInputDialog(null,"" +
@@ -74,7 +71,7 @@ public class AgentApp {
                                              if ("70%".equals(rate)) {
                                                  int Reimbursement_rate = 70;
                                                  codeBare = JOptionPane.showInputDialog(null,"Enter le codeBarre du medicament (optionel)");
-                                                 if(codeBare.trim().isEmpty() || codeBare == null){
+                                                 if(codeBare.trim().isEmpty()){
                                                      codeBare = null;
                                                  }
                                                  payed_amount = Integer.parseInt(JOptionPane.showInputDialog(null,"Enter le montant payé"));
@@ -129,6 +126,55 @@ public class AgentApp {
                                      }
                                      break;
                                  }
+                                 case 2: {
+                                     String labo = JOptionPane.showInputDialog(null, "Enter the name of the laboratory");
+                                     Description[] descriptionValues = Description.values();
+                                     JComboBox<Description> descriptionComboBox = new JComboBox<>(descriptionValues);
+                                     descriptionComboBox.setSelectedItem(descriptionValues[0]);
+
+                                     LaboratoryDocDAO laboDAO = new LaboratoryDocDAO();
+
+                                     JPanel panel = new JPanel();
+                                     panel.add(new JLabel("Select Description:"));
+                                     panel.add(descriptionComboBox);
+
+                                     int result = JOptionPane.showConfirmDialog(null, panel, "Description Selection", JOptionPane.OK_CANCEL_OPTION);
+
+                                     if (result == JOptionPane.OK_OPTION) {
+                                         Description selectedDescription = (Description) descriptionComboBox.getSelectedItem();
+                                         Category selectedCategory = (Category) JOptionPane.showInputDialog(
+                                                 null,
+                                                 "Select Category:",
+                                                 "Category Selection",
+                                                 JOptionPane.QUESTION_MESSAGE,
+                                                 null,
+                                                 Category.values(),
+                                                 Category.MALADIE
+                                         );
+
+                                         int payed_amount = Integer.parseInt(JOptionPane.showInputDialog(null,"Enter le montant payé"));
+                                         String randomCode = laboDAO.generateRandomCode();
+
+                                         int reimbursement_rate = (selectedCategory == Category.MALADIE) ? 70 : 90;
+                                         LaboratoryDoc doc = new LaboratoryDoc(randomCode, payed_amount, reimbursement_rate, Description.RADIO, labo, Category.MALADIE);
+
+
+                                         if (selectedCategory == Category.ESTHETIQUE) {
+                                             JOptionPane.showMessageDialog(null,"Ce type de document n'est pas remboursable","error",JOptionPane.ERROR_MESSAGE);
+                                         } else {
+                                             boolean isDocAdded = laboDAO.addDocument(doc);
+                                             if (isDocAdded) {
+                                                 JOptionPane.showMessageDialog(null,"Document bien ajouté !");
+                                             } else {
+                                                 JOptionPane.showMessageDialog(null,"Erreur survenue !","error", JOptionPane.ERROR_MESSAGE);
+                                             }
+                                         }
+                                     }
+                                     break;
+                                 }
+
+                                 default:
+                                     throw new IllegalStateException("Unexpected value: " + subchoice);
                              }
                          }else{
                              JOptionPane.showMessageDialog(null,"une erreur est survenue !", "error", JOptionPane.ERROR_MESSAGE);
