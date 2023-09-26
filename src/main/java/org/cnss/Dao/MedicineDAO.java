@@ -52,7 +52,6 @@ public class MedicineDAO implements DocumentDAO<Medicine>{
     public HashMap<String, String> checkMedicineByCode(String code) {
         try {
             String rate = null;
-            String code = null;
             String query = "SELECT * FROM medicine WHERE CODE = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, code);
