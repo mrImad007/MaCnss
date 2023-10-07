@@ -10,9 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class companyDAO {
+public class CompanyDAO {
     private final Connection connection;
-    public companyDAO() {
+    public CompanyDAO() {
         connection = DatabaseConnection.getConnection();
     }
 
@@ -76,7 +76,7 @@ public class companyDAO {
             preparedStatement.setInt(1,id);
             int row = preparedStatement.executeUpdate();
             if (row>0){
-                JOptionPane.showMessageDialog(null,"Nom mis à jour !");
+                JOptionPane.showMessageDialog(null,"Entreprise supprimé !");
             }else {
                 JOptionPane.showMessageDialog(null,"Une erreur est survenue !","error",JOptionPane.ERROR_MESSAGE);
             }
