@@ -14,8 +14,7 @@ public class EmployeeDAO {
     public EmployeeDAO() {
         connection = DatabaseConnection.getConnection();
     }
-    public boolean updateEmployee(Employee employee){
-        try {
+    public boolean updateEmployee(Employee employee) throws SQLException{
             String query = "UPDATE employee" +
                             "SET matricule = ?, username = ?, status = ?, born_date = ?, companyID = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
@@ -31,12 +30,9 @@ public class EmployeeDAO {
                 JOptionPane.showMessageDialog(null,"Une erreur est survenue","error", JOptionPane.ERROR_MESSAGE);
             }
             return true;
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
     }
-    public boolean createEmployee(Employee employee){
-        try {
+    public boolean createEmployee(Employee employee) throws SQLException {
+
             String query = "INSERT INTO `employee` (matricule,username,born_date,companyID) VALUES (?,?,?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,employee.getMatricule());
@@ -50,35 +46,12 @@ public class EmployeeDAO {
                 JOptionPane.showMessageDialog(null,"Une erreur est survenue","error", JOptionPane.ERROR_MESSAGE);
             }
             return true;
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
     }
-    public boolean deleteEmployee(String matricule){
-        try {
-            String query = "DELETE FROM `employee` WHERE matricule = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1,matricule);
-            int row = preparedStatement.executeUpdate();
-            if (row>0){
-                JOptionPane.showMessageDialog(null,"employee suprimé");
-            }else {
-                JOptionPane.showMessageDialog(null,"Une erreur est survenue !","error",JOptionPane.ERROR_MESSAGE);
-            }
-            return true;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public ResultSet getEmployee(String matricule){
-        try {
+    public ResultSet getEmployee(String matricule) throws SQLException{
             String query = "SELECT * FROM `employee` WHERE matricule = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1,matricule);
             ResultSet result = preparedStatement.executeQuery();
             return result;
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
     }
 }

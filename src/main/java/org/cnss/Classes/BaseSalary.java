@@ -1,11 +1,27 @@
 package org.cnss.Classes;
 
-import java.util.Date;
-
 public class BaseSalary {
-    private String employeeMatricule;
+    private int employeeid;
     private float salary;
     private int working_days;
+
+    private String date;
+
+    public int getEmployeeid() {
+        return employeeid;
+    }
+
+    public void setEmployeeid(int employeeid) {
+        this.employeeid = employeeid;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public int getWorking_days() {
         return working_days;
@@ -15,15 +31,12 @@ public class BaseSalary {
         this.working_days = working_days;
     }
 
-    private Date starting_date;
-    private Date ending_date;
-
-    public String getEmployeeMatricule() {
-        return employeeMatricule;
+    public int getEmployeeId() {
+        return employeeid;
     }
 
-    public void setEmployeeMatricule(String employeeMatricule) {
-        this.employeeMatricule = employeeMatricule;
+    public void setEmployeeId(int employeeid) {
+        this.employeeid = employeeid;
     }
 
     public float getSalary() {
@@ -34,28 +47,12 @@ public class BaseSalary {
         this.salary = salary;
     }
 
-    public Date getStarting_date() {
-        return starting_date;
-    }
 
-    public void setStarting_date(Date starting_date) {
-        this.starting_date = starting_date;
-    }
-
-    public Date getEnding_date() {
-        return ending_date;
-    }
-
-    public void setEnding_date(Date ending_date) {
-        this.ending_date = ending_date;
-    }
-
-    public BaseSalary(String employeeMatricule, float salary,int working_days ,Date starting_date, Date ending_date) {
-        this.employeeMatricule = employeeMatricule;
+    public BaseSalary(int employeeid, float salary,int working_days, String date ) {
+        this.employeeid = employeeid;
         this.salary = salary;
         this.working_days = working_days;
-        this.starting_date = starting_date;
-        this.ending_date = ending_date;
+        this.date = date;
     }
 
 }

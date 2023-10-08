@@ -33,26 +33,6 @@ public class CompanyDAO {
         }
     }
 
-    public boolean updateCompany(Company company){
-        try {
-            String query = "UPDATE `company`" +
-                            "SET `name` = ?" +
-                            "WHERE `id` = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1,company.getName());
-            preparedStatement.setInt(2,company.getId());
-            int row = preparedStatement.executeUpdate();
-            if (row>0){
-                JOptionPane.showMessageDialog(null,"Nom mis à jour !");
-            }else {
-                JOptionPane.showMessageDialog(null,"Une erreur est survenue !","error",JOptionPane.ERROR_MESSAGE);
-            }
-            return true;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public int getCompanyId(Company company){
         try {
             int id = 0;
@@ -69,21 +49,5 @@ public class CompanyDAO {
         }
     }
 
-    public boolean deleteCompany(int id){
-        try {
-            String query = "DELETE FROM `company` WHERE id = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1,id);
-            int row = preparedStatement.executeUpdate();
-            if (row>0){
-                JOptionPane.showMessageDialog(null,"Entreprise supprimé !");
-            }else {
-                JOptionPane.showMessageDialog(null,"Une erreur est survenue !","error",JOptionPane.ERROR_MESSAGE);
-            }
-            return true;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 }

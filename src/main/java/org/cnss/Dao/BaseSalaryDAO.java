@@ -4,18 +4,14 @@ import org.cnss.Classes.BaseSalary;
 import org.cnss.JDBC.DatabaseConnection;
 
 import javax.swing.*;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 public class BaseSalaryDAO {
     public final Connection connection;
     public BaseSalaryDAO(){
         connection = DatabaseConnection.getConnection();
     }
-    public boolean fixSalary(String matricule,float salary){
-        try {
+    public boolean fixSalary(String matricule,float salary) throws SQLException{
             String query = "UPDATE `base_salary`" +
                             "SET `salary` = ?" +
                             "WHERE employee_matricule = ?";
@@ -29,39 +25,15 @@ public class BaseSalaryDAO {
                 JOptionPane.showMessageDialog(null,"Une erreur est survenue !","error",JOptionPane.ERROR_MESSAGE);
             }
             return true;
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
     }
 
-    public boolean EndOldSalary(BaseSalary baseSalary){
-        try {
-            String query = "UPDATE `base_salary`" +
-                            "SET ending_date = ?" +
-                            "WHERE employee_matricule = ? AND `salary` = ?,";
+    public boolean declareSalary(BaseSalary baseSalary) throws SQLException{
+            String query = "INSERT INTO `base_salary` (employee_id , salary, working_days, date) VALUES (?,?,?,?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setDate(1, (Date) baseSalary.getEnding_date());
-            preparedStatement.setString(2, baseSalary.getEmployeeMatricule());
-            preparedStatement.setFloat(3,baseSalary.getSalary());
-            int row = preparedStatement.executeUpdate();
-            if (row>0){
-                JOptionPane.showMessageDialog(null,"Fin de salaire ancien !");
-            }else{
-                JOptionPane.showMessageDialog(null,"Une erreur est survenue !","error",JOptionPane.ERROR_MESSAGE);
-            }
-            return true;
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean declareSalary(BaseSalary baseSalary){
-        try {
-            String query = "INSERT INTO `base_salary` (employee_matricule , salary, starting_date) VALUES (?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, baseSalary.getEmployeeMatricule());
+            preparedStatement.setInt(1, baseSalary.getEmployeeId());
             preparedStatement.setFloat(2, baseSalary.getSalary());
-            preparedStatement.setDate(3,(Date) baseSalary.getStarting_date());
+            preparedStatement.setInt(3,baseSalary.getWorking_days());
+            preparedStatement.setString(4,baseSalary.getDate());
             int checker = preparedStatement.executeUpdate();
             if (checker>0){
                 JOptionPane.showMessageDialog(null,"Salaire declaré !");
@@ -69,16 +41,13 @@ public class BaseSalaryDAO {
                 JOptionPane.showMessageDialog(null,"Une erreur est survenue !","error",JOptionPane.ERROR_MESSAGE);
             }
             return true;
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
     }
-    public float last95Salaries(String matricule) {
-        String sql = "SELECT salary FROM (SELECT salary FROM base_salary WHERE Employee = ? ORDER BY id DESC LIMIT 95) AS lastSalaries";
+    public float last95Salaries(int employee_id) {
+        String sql = "SELECT salary FROM (SELECT salary FROM base_salary WHERE Employee_id = ? ORDER BY salary_id DESC LIMIT 95) AS lastSalaries";
         double totalMontant = 0.0;
         int nombreSalaires = 0;
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, matricule);
+            statement.setInt(1, employee_id);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 float salary = resultSet.getFloat("salary");
@@ -95,4 +64,23 @@ public class BaseSalaryDAO {
             return 0;
         }
     }
+
+    public int workingDays(int employee_id) {
+        String sql = "SELECT working_days FROM base_salary WHERE Employee_id = ? ORDER BY working_days DESC LIMIT 95;";
+        int total = 0;
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, employee_id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int totalDays = resultSet.getInt("working_days");
+                total += totalDays;
+            }
+            System.out.println(total);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return total;
+    }
+
 }
