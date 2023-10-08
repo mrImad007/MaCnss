@@ -10,7 +10,6 @@ import java.sql.SQLException;
 
 public class AgentDAO implements UserDAO<Agent> {
     private final Connection connection;
-
     public AgentDAO() {
         connection = DatabaseConnection.getConnection();
     }
