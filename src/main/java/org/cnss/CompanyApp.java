@@ -10,6 +10,9 @@ import org.cnss.Dao.EmployeeDAO;
 import javax.swing.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 
 public class CompanyApp {
     public static void main() throws SQLException {
@@ -93,53 +96,67 @@ public class CompanyApp {
                     BaseSalaryDAO baseSalaryDAO = new BaseSalaryDAO();
                     ResultSet employee = employeeDAO.getEmployee(matricule);
                     int employee_id = 0;
+                    String borndate = null;
 
                     while (employee.next()) {
                         employee_id = employee.getInt(1);
+                        borndate = employee.getString("born_date");
                     }
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate birthDate = LocalDate.parse(borndate, formatter);
+
+                    LocalDate currentDate = LocalDate.now();
+
+                    Period age = Period.between(birthDate, currentDate);
+
+                    int years = age.getYears();
+
                     if (employee_id == 0) {
                         JOptionPane.showMessageDialog(null, "Empoyé introuvable", "Erreur", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        int totaldays = baseSalaryDAO.workingDays(employee_id);
-                        if (totaldays>1320){
-                            if (totaldays>3240){
-                                int extradays = totaldays - 3240;
-                                float percetage = 50;
-                                percetage += extradays/216;
-                                System.out.println(percetage);
-                                if (percetage>70){
-                                    float total = baseSalaryDAO.last95Salaries(employee_id);
-                                    total = (total*70)/100;
-                                    if ((total) > 6000) {
-                                        JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 6000 DH");
-                                    } else if ((total) < 1000) {
-                                        JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 1000 DH");
-                                    } else {
-                                        JOptionPane.showMessageDialog(null, "Le montant de votre retraite est :" + total + " DH");
+                        if (years>55){
+                            int totaldays = baseSalaryDAO.workingDays(employee_id);
+                            if (totaldays>1320){
+                                if (totaldays>3240){
+                                    int extradays = totaldays - 3240;
+                                    float percetage = 50;
+                                    percetage += extradays/216;
+                                    if (percetage>70){
+                                        float total = baseSalaryDAO.last95Salaries(employee_id);
+                                        total = (total*70)/100;
+                                        if ((total) > 6000) {
+                                            JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 6000 DH");
+                                        } else if ((total) < 1000) {
+                                            JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 1000 DH");
+                                        } else {
+                                            JOptionPane.showMessageDialog(null, "Le montant de votre retraite est :" + total + " DH");
+                                        }
+                                    }else {
+                                        float total = baseSalaryDAO.last95Salaries(employee_id);
+                                        total = (total*percetage)/100;
+                                        if ((total) > 6000) {
+                                            JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 6000 DH");
+                                        } else if ((total) < 1000) {
+                                            JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 1000 DH");
+                                        } else {
+                                            JOptionPane.showMessageDialog(null, "Le montant de votre retraite est :" + total + " DH");
+                                        }
                                     }
                                 }else {
                                     float total = baseSalaryDAO.last95Salaries(employee_id);
-                                    total = (total*percetage)/100;
-                                    if ((total) > 6000) {
+                                    if ((total/2) > 6000) {
                                         JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 6000 DH");
-                                    } else if ((total) < 1000) {
+                                    } else if ((total/2) < 1000) {
                                         JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 1000 DH");
                                     } else {
-                                        JOptionPane.showMessageDialog(null, "Le montant de votre retraite est :" + total + " DH");
+                                        JOptionPane.showMessageDialog(null, "Le montant de votre retraite est :" + total/2 + " DH");
                                     }
                                 }
-                            }else {
-                                float total = baseSalaryDAO.last95Salaries(employee_id);
-                                if ((total/2) > 6000) {
-                                    JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 6000 DH");
-                                } else if ((total/2) < 1000) {
-                                    JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 1000 DH");
-                                } else {
-                                    JOptionPane.showMessageDialog(null, "Le montant de votre retraite est :" + total/2 + " DH");
-                                }
+                            }else{
+                                JOptionPane.showMessageDialog(null,"Cet employée n'a pas encore de droit de la retraite");
                             }
                         }else{
-                            JOptionPane.showMessageDialog(null,"Cet employée n'a pas encore de droit de la retraite");
+                            JOptionPane.showMessageDialog(null,"Cet employé n'a pas encore atteint 55 ans, il a : "+years+"ans");
                         }
                     }
                     break;
