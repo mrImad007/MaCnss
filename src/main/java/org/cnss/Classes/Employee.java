@@ -1,7 +1,5 @@
 package org.cnss.Classes;
 
-import java.sql.Date;
-import java.util.stream.Stream;
 
 public class Employee {
     private String matricule;

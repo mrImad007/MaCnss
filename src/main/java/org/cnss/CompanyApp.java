@@ -13,6 +13,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Map;
 
 public class CompanyApp {
     public static void main() throws SQLException {
@@ -94,6 +96,7 @@ public class CompanyApp {
                     String matricule = JOptionPane.showInputDialog(null, "Entrer le matricule de l'employée:");
                     EmployeeDAO employeeDAO = new EmployeeDAO();
                     BaseSalaryDAO baseSalaryDAO = new BaseSalaryDAO();
+
                     ResultSet employee = employeeDAO.getEmployee(matricule);
                     int employee_id = 0;
                     String borndate = null;
@@ -102,6 +105,8 @@ public class CompanyApp {
                         employee_id = employee.getInt(1);
                         borndate = employee.getString("born_date");
                     }
+
+
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     LocalDate birthDate = LocalDate.parse(borndate, formatter);
 
@@ -122,7 +127,7 @@ public class CompanyApp {
                                     float percetage = 50;
                                     percetage += extradays/216;
                                     if (percetage>70){
-                                        float total = baseSalaryDAO.last95Salaries(employee_id);
+                                        float total = baseSalaryDAO.retirementSalary(employee_id);
                                         total = (total*70)/100;
                                         if ((total) > 6000) {
                                             JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 6000 DH");
@@ -132,7 +137,7 @@ public class CompanyApp {
                                             JOptionPane.showMessageDialog(null, "Le montant de votre retraite est :" + total + " DH");
                                         }
                                     }else {
-                                        float total = baseSalaryDAO.last95Salaries(employee_id);
+                                        float total = baseSalaryDAO.retirementSalary(employee_id);
                                         total = (total*percetage)/100;
                                         if ((total) > 6000) {
                                             JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 6000 DH");
@@ -143,7 +148,7 @@ public class CompanyApp {
                                         }
                                     }
                                 }else {
-                                    float total = baseSalaryDAO.last95Salaries(employee_id);
+                                    float total = baseSalaryDAO.retirementSalary(employee_id);
                                     if ((total/2) > 6000) {
                                         JOptionPane.showMessageDialog(null, "Le montant de votre retraite est : 6000 DH");
                                     } else if ((total/2) < 1000) {
@@ -162,7 +167,6 @@ public class CompanyApp {
                     break;
                 }
                 case 5: {
-                    // Exit the program
                     System.exit(0);
                     break;
                 }
