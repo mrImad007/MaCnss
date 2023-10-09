@@ -11,38 +11,33 @@ public class BaseSalaryDAO {
     public BaseSalaryDAO(){
         connection = DatabaseConnection.getConnection();
     }
-    public boolean fixSalary(String matricule,float salary) throws SQLException{
-            String query = "UPDATE `base_salary`" +
-                            "SET `salary` = ?" +
-                            "WHERE employee_matricule = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setFloat(1,salary);
-            preparedStatement.setString(2,matricule);
-            int row = preparedStatement.executeUpdate();
-            if (row>0){
-                JOptionPane.showMessageDialog(null,"Salaire corrigé !");
-            }else{
-                JOptionPane.showMessageDialog(null,"Une erreur est survenue !","error",JOptionPane.ERROR_MESSAGE);
-            }
-            return true;
-    }
+    public boolean declareSalary(BaseSalary baseSalary) {
+        String query = "INSERT INTO `base_salary` (employee_id, salary, working_days, date) VALUES (?,?,?,?)";
 
-    public boolean declareSalary(BaseSalary baseSalary) throws SQLException{
-            String query = "INSERT INTO `base_salary` (employee_id , salary, working_days, date) VALUES (?,?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, baseSalary.getEmployeeId());
             preparedStatement.setFloat(2, baseSalary.getSalary());
-            preparedStatement.setInt(3,baseSalary.getWorking_days());
-            preparedStatement.setString(4,baseSalary.getDate());
+            preparedStatement.setInt(3, baseSalary.getWorking_days());
+            preparedStatement.setString(4, baseSalary.getDate());
+
             int checker = preparedStatement.executeUpdate();
-            if (checker>0){
-                JOptionPane.showMessageDialog(null,"Salaire declaré !");
-            }else{
-                JOptionPane.showMessageDialog(null,"Une erreur est survenue !","error",JOptionPane.ERROR_MESSAGE);
+
+            if (checker > 0) {
+                JOptionPane.showMessageDialog(null, "Salaire déclaré !");
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(null, "Une erreur est survenue !", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return false;
             }
-            return true;
+        } catch (SQLException e) {
+            // Handle the SQL exception, log it, and provide detailed error information if needed
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erreur lors de la déclaration du salaire : " + e.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
-    public float last95Salaries(int employee_id) {
+
+    public float retirementSalary(int employee_id) {
         String sql = "SELECT salary FROM (SELECT salary FROM base_salary WHERE Employee_id = ? ORDER BY salary_id DESC LIMIT 95) AS lastSalaries";
         double totalMontant = 0.0;
         int nombreSalaires = 0;
@@ -79,7 +74,6 @@ public class BaseSalaryDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return total;
     }
 

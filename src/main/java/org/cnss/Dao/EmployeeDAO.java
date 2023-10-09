@@ -4,10 +4,9 @@ import org.cnss.Classes.Employee;
 import org.cnss.JDBC.DatabaseConnection;
 
 import javax.swing.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EmployeeDAO {
     public final Connection connection;
@@ -54,4 +53,28 @@ public class EmployeeDAO {
             ResultSet result = preparedStatement.executeQuery();
             return result;
     }
+
+    public Map<String, Object> getEmploys(String matricule) throws SQLException {
+        String query = "SELECT * FROM `employee` WHERE matricule = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, matricule);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        Map<String, Object> employeeData = new HashMap<>();
+
+        if (resultSet.next()) {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            for (int i = 1; i <= columnCount; i++) {
+                String columnName = metaData.getColumnName(i);
+                Object columnValue = resultSet.getObject(i);
+                employeeData.put(columnName, columnValue);
+            }
+        }
+
+        resultSet.close();
+        return employeeData;
+    }
+
 }
